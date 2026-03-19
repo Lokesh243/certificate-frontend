@@ -10,7 +10,7 @@ function StudentHome() {
 
   useEffect(() => {
     fetchRequests();
-  }, []);
+  }, []); //eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchRequests = async () => {
     try {
