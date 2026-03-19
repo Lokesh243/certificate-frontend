@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
@@ -14,16 +14,9 @@ function Login() {
         password
       });
 
-      // 🔥 IMPORTANT FIX
-      if (!res.data) {
-        alert("Invalid credentials");
-        return;
-      }
-
-      // store user
+      
       localStorage.setItem("user", JSON.stringify(res.data));
 
-      // navigate based on role
       if (res.data.role === "ADMIN") {
         navigate("/admin-home");
       } else {
@@ -31,7 +24,14 @@ function Login() {
       }
 
     } catch (error) {
-      alert("Error connecting to server");
+      console.log(error);
+
+      
+      if (error.response && error.response.status === 401) {
+        alert("Invalid credentials");
+      } else {
+        alert("Server error. Please try again");
+      }
     }
   };
 
