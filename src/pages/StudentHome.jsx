@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
@@ -10,18 +10,18 @@ function StudentHome() {
 
   useEffect(() => {
     fetchRequests();
-  }, []); //eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line
 
   const fetchRequests = async () => {
     try {
-      const res = await API.get(`/request/student/${username}`);
+      const res = await API.get(`/api/request/student/${username}`);
       setRequests(res.data);
     } catch (err) {
       alert("Error loading requests");
     }
   };
 
-  // ✅ Download Certificate
+  // ✅ Download certificate
   const downloadCertificate = async (id) => {
     try {
       const res = await API.get(`/certificate/download/${id}`, {
@@ -39,7 +39,7 @@ function StudentHome() {
     }
   };
 
-  
+  // ✅ Logout
   const logout = () => {
     localStorage.clear();
     navigate("/");
@@ -49,10 +49,24 @@ function StudentHome() {
     <div style={{ padding: "20px" }}>
       <h2>Student Home</h2>
 
-      <button onClick={() => navigate(-1)}>⬅ Back</button>
-      <button onClick={logout} style={{ marginLeft: "10px" }}>
-        Logout
-      </button>
+      {/* ✅ Buttons */}
+      <div style={{ marginBottom: "20px" }}>
+        <button onClick={() => navigate(-1)}>⬅ Back</button>
+
+        <button
+          onClick={() => navigate("/student-dashboard")}
+          style={{ marginLeft: "10px" }}
+        >
+          Dashboard
+        </button>
+
+        <button
+          onClick={logout}
+          style={{ marginLeft: "10px" }}
+        >
+          Logout
+        </button>
+      </div>
 
       <hr />
 
@@ -62,11 +76,18 @@ function StudentHome() {
         <p>No requests found</p>
       ) : (
         requests.map((req) => (
-          <div key={req.id} style={{ border: "1px solid gray", margin: "10px", padding: "10px" }}>
+          <div
+            key={req.id}
+            style={{
+              border: "1px solid gray",
+              padding: "10px",
+              margin: "10px",
+            }}
+          >
             <p><b>Type:</b> {req.certificateType}</p>
             <p><b>Status:</b> {req.status}</p>
 
-           
+            {/* ✅ Download if approved */}
             {req.status === "APPROVED" && (
               <button onClick={() => downloadCertificate(req.id)}>
                 Download Certificate

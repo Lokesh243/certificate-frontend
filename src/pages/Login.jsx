@@ -8,45 +8,24 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-   
-    if (!username || !password) {
-      alert("Please enter username and password");
-      return;
-    }
-
     try {
       const res = await API.post("/login", {
-        username: username,
-        password: password,
+        username,
+        password,
       });
 
-     
-      const data = res.data;
+    
+      localStorage.setItem("username", username);
 
       
-      localStorage.setItem("user", JSON.stringify(data));
-
-      
-      if (data.role === "ADMIN") {
+      if (res.data.role === "ADMIN") {
         navigate("/admin-home");
       } else {
         navigate("/student-home");
       }
 
     } catch (err) {
-      
-
-      if (err.response) {
-        
-       alert(
-  typeof err.response.data === "string"
-    ? err.response.data
-    : "Invalid credentials"
-);
-      } else {
-        
-        alert("Server not reachable");
-      }
+      alert("Invalid credentials");
     }
   };
 
