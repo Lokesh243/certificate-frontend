@@ -19,17 +19,16 @@ function StudentDashboard() {
     }
   };
 
-  // ✅ DOWNLOAD
-  const downloadCertificate = async (id) => {
+  const download = async (id) => {
     try {
-      const response = await API.get(`/request/download/${id}`, {
-        responseType: "blob",
+      const res = await API.get(`/certificate/download/${id}`, {
+        responseType: "blob"
       });
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", `certificate_${id}.pdf`);
+      link.setAttribute("download", "certificate.pdf");
       document.body.appendChild(link);
       link.click();
     } catch (err) {
@@ -46,39 +45,22 @@ function StudentDashboard() {
     <div>
       <h2>Student Dashboard</h2>
 
+      <button onClick={() => navigate("/student-home")}>Back</button>
       <button onClick={logout}>Logout</button>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Download</th>
-          </tr>
-        </thead>
+      <ul>
+        {requests.map((req) => (
+          <li key={req.id}>
+            {req.name} - {req.status}
 
-        <tbody>
-          {requests.map((req) => (
-            <tr key={req.id}>
-              <td>{req.id}</td>
-              <td>{req.certificateType}</td>
-              <td>{req.reason}</td>
-              <td>{req.status}</td>
-              <td>
-                {req.status === "APPROVED" ? (
-                  <button onClick={() => downloadCertificate(req.id)}>
-                    Download
-                  </button>
-                ) : (
-                  "Not Available"
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            {req.status === "APPROVED" && (
+              <button onClick={() => download(req.id)}>
+                Download
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

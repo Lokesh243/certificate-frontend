@@ -1,55 +1,48 @@
-import  { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(
-        "https://certificate-backend-mblv.onrender.com/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+      const res = await API.post("/auth/login", {
+        username,
+        password
+      });
 
-      if (!response.ok) {
-        alert("Login failed");
+      // 🔥 IMPORTANT FIX
+      if (!res.data) {
+        alert("Invalid credentials");
         return;
       }
 
-      const data = await response.json();
+      // store user
+      localStorage.setItem("user", JSON.stringify(res.data));
 
-      if (data) {
-        alert("Login successful");
-
-        // store user (simple)
-        localStorage.setItem("user", JSON.stringify(data));
-
-        // redirect based on role
-        if (data.role === "ADMIN") {
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/student";
-        }
+      // navigate based on role
+      if (res.data.role === "ADMIN") {
+        navigate("/admin-home");
+      } else {
+        navigate("/student-home");
       }
+
     } catch (error) {
-      console.error(error);
       alert("Error connecting to server");
     }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
+    <div>
       <h2>Login</h2>
 
       <input
         type="text"
         placeholder="Username"
+        value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <br /><br />
@@ -57,6 +50,7 @@ function Login() {
       <input
         type="password"
         placeholder="Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <br /><br />

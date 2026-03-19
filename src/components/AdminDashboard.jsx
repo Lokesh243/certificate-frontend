@@ -19,23 +19,12 @@ function AdminDashboard() {
     }
   };
 
-  // ✅ APPROVE
   const approve = async (id) => {
     try {
       await API.put(`/request/approve/${id}`);
-      fetchRequests(); // refresh
-    } catch (err) {
-      alert("Approve failed");
-    }
-  };
-
-  // ✅ REJECT
-  const reject = async (id) => {
-    try {
-      await API.put(`/request/reject/${id}`);
       fetchRequests();
     } catch (err) {
-      alert("Reject failed");
+      alert("Error approving request");
     }
   };
 
@@ -48,34 +37,22 @@ function AdminDashboard() {
     <div>
       <h2>Admin Dashboard</h2>
 
+      <button onClick={() => navigate("/admin-home")}>Back</button>
       <button onClick={logout}>Logout</button>
 
-      <table border="1">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Type</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+      <ul>
+        {requests.map((req) => (
+          <li key={req.id}>
+            {req.name} - {req.status}
 
-        <tbody>
-          {requests.map((req) => (
-            <tr key={req.id}>
-              <td>{req.id}</td>
-              <td>{req.certificateType}</td>
-              <td>{req.reason}</td>
-              <td>{req.status}</td>
-              <td>
-                <button onClick={() => approve(req.id)}>Approve</button>
-                <button onClick={() => reject(req.id)}>Reject</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            {req.status !== "APPROVED" && (
+              <button onClick={() => approve(req.id)}>
+                Approve
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
