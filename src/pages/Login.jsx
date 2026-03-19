@@ -8,7 +8,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    // 🔒 Basic validation
+   
     if (!username || !password) {
       alert("Please enter username and password");
       return;
@@ -20,13 +20,13 @@ function Login() {
         password: password,
       });
 
-      // ✅ SUCCESS (status 200)
+     
       const data = res.data;
 
-      // Save user
+      
       localStorage.setItem("user", JSON.stringify(data));
 
-      // Role-based navigation
+      
       if (data.role === "ADMIN") {
         navigate("/admin-home");
       } else {
@@ -34,13 +34,17 @@ function Login() {
       }
 
     } catch (err) {
-      // 🔥 IMPORTANT FIX (JSON bug handled here)
+      
 
       if (err.response) {
-        // Backend responded (like 401)
-        alert(err.response.data || "Invalid credentials");
+        
+       alert(
+  typeof err.response.data === "string"
+    ? err.response.data
+    : "Invalid credentials"
+);
       } else {
-        // Server down / network issue
+        
         alert("Server not reachable");
       }
     }
