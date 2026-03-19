@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
@@ -8,35 +8,46 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    // 🔒 Basic validation
+    if (!username || !password) {
+      alert("Please enter username and password");
+      return;
+    }
+
     try {
-      const res = await API.post("/auth/login", {
-        username,
-        password
+      const res = await API.post("/login", {
+        username: username,
+        password: password,
       });
 
-      
-      localStorage.setItem("user", JSON.stringify(res.data));
+      // ✅ SUCCESS (status 200)
+      const data = res.data;
 
-      if (res.data.role === "ADMIN") {
+      // Save user
+      localStorage.setItem("user", JSON.stringify(data));
+
+      // Role-based navigation
+      if (data.role === "ADMIN") {
         navigate("/admin-home");
       } else {
         navigate("/student-home");
       }
 
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      // 🔥 IMPORTANT FIX (JSON bug handled here)
 
-      
-      if (error.response && error.response.status === 401) {
-        alert("Invalid credentials");
+      if (err.response) {
+        // Backend responded (like 401)
+        alert(err.response.data || "Invalid credentials");
       } else {
-        alert("Server error. Please try again");
+        // Server down / network issue
+        alert("Server not reachable");
       }
     }
   };
 
   return (
-    <div>
+    <div style={{ textAlign: "center", marginTop: "100px" }}>
       <h2>Login</h2>
 
       <input
