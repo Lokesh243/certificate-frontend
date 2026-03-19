@@ -1,66 +1,72 @@
-import React, { useEffect, useState } from "react";
-import API from "../services/api";
+import  { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 function StudentDashboard() {
   const [requests, setRequests] = useState([]);
   const navigate = useNavigate();
+  const username = localStorage.getItem("username");
 
+  
   useEffect(() => {
-    fetchRequests();
-  }, []);
+    if (!username) return;
 
-  const fetchRequests = async () => {
-    try {
-      const res = await API.get("/request/all");
-      setRequests(res.data);
-    } catch (err) {
-      alert("Error fetching requests");
-    }
-  };
+    const fetchData = async () => {
+      try {
+        const res = await API.get(`/request/student/${username}`);
+        setRequests(res.data);
+      } catch {
+        alert("Error fetching requests");
+      }
+    };
 
-  const download = async (id) => {
-    try {
-      const res = await API.get(`/certificate/download/${id}`, {
-        responseType: "blob"
-      });
+    fetchData();
+  }, [username]);
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "certificate.pdf");
-      document.body.appendChild(link);
-      link.click();
-    } catch (err) {
-      alert("Download failed");
-    }
-  };
-
+  
   const logout = () => {
     localStorage.clear();
     navigate("/");
   };
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Student Dashboard</h2>
 
-      <button onClick={() => navigate("/student-home")}>Back</button>
-      <button onClick={logout}>Logout</button>
+      
+      <div style={{ marginBottom: "15px" }}>
+        <button onClick={() => navigate(-1)}>⬅ Back</button>
 
-      <ul>
-        {requests.map((req) => (
-          <li key={req.id}>
-            {req.name} - {req.status}
+        <button
+          onClick={logout}
+          style={{ marginLeft: "10px" }}
+        >
+          Logout
+        </button>
+      </div>
 
-            {req.status === "APPROVED" && (
-              <button onClick={() => download(req.id)}>
-                Download
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <hr />
+
+    
+      <h3>Your Requests</h3>
+
+      {requests.length === 0 ? (
+        <p>No requests found</p>
+      ) : (
+        requests.map((r) => (
+          <div
+            key={r.id}
+            style={{
+              border: "1px solid gray",
+              padding: "10px",
+              margin: "10px"
+            }}
+          >
+            <p><b>Type:</b> {r.certificateType}</p>
+            <p><b>Status:</b> {r.status}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 }

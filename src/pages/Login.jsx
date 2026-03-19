@@ -7,49 +7,29 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const login = async () => {
     try {
-      const res = await API.post("/login", {
-        username,
-        password,
-      });
+      const res = await API.post("/auth/login", { username, password });
 
-    
       localStorage.setItem("username", username);
 
-      
       if (res.data.role === "ADMIN") {
         navigate("/admin-home");
       } else {
         navigate("/student-home");
       }
 
-    } catch (err) {
+    } catch {
       alert("Invalid credentials");
     }
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
+    <div>
       <h2>Login</h2>
-
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <br /><br />
-
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br /><br />
-
-      <button onClick={handleLogin}>Login</button>
+      <input onChange={(e) => setUsername(e.target.value)} />
+      <input type="password" onChange={(e) => setPassword(e.target.value)} />
+      <button onClick={login}>Login</button>
     </div>
   );
 }

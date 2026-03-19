@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://certificate-backend-mblv.onrender.com/auth"
+  baseURL: "https://certificate-backend-mblv.onrender.com"
 });
 
 export default API;
