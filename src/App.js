@@ -11,14 +11,14 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Login */}
+        
         <Route path="/" element={<Login />} />
 
-        {/* Admin */}
+       
         <Route path="/admin-home" element={<AdminHome />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
 
-        {/* Student */}
+        
         <Route path="/student-home" element={<StudentHome />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
 

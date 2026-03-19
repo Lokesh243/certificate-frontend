@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 
 function AdminHome() {
@@ -10,16 +10,21 @@ function AdminHome() {
   };
 
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Admin Home</h2>
 
-      <button onClick={() => navigate("/admin-dashboard")}>
-        Go to Dashboard
+      <button onClick={() => navigate(-1)}>⬅ Back</button>
+      <button onClick={logout} style={{ marginLeft: "10px" }}>
+        Logout
       </button>
 
-      <br /><br />
+      <hr />
 
-      <button onClick={logout}>Logout</button>
+      <h3>Actions</h3>
+
+      <button onClick={() => navigate("/admin-dashboard")}>
+        View Requests
+      </button>
     </div>
   );
 }
