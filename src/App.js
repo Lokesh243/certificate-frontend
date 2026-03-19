@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import AdminDashboard from "./components/AdminDashboard";
 import StudentDashboard from "./components/StudentDashboard";
-import AdminHome from "./components/AdminHome";
-import StudentHome from "./components/StudentHome";
+import AdminHome from "./pages/AdminHome";
+import StudentHome from "./pages/StudentHome";
 
 function App() {
   return (
